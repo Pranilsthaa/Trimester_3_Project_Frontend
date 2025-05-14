@@ -1,25 +1,26 @@
 import { useState, type FormEvent } from "react";
 import POSTDATA from "../../Api/PostData";
 import type { AxiosResponse } from "axios";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 
 function Signup() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
+  const navigate = useNavigate();
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      const response = (await POSTDATA("login", {
+      const response = (await POSTDATA("register", {
         username,
         password,
       })) as AxiosResponse<LoginResponse>;
-      console.log(response);
       if (response?.status === 200) {
-        alert("Login successful");
-        // Optionally: redirect or set auth state
-      } else if (response?.status === 401) {
-        alert(response?.response?.data?.message || "Unauthorizedd");
+        navigate("/login", { replace: true });
+        alert("User registered successfully");
+      } else if (response?.status === 400) {
+        alert(response?.response?.data?.message || "user already exists");
       } else {
         alert("Unexpected error occurred");
       }

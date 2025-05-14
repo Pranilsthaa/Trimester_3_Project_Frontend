@@ -2,22 +2,16 @@ import "./App.css";
 import { createBrowserRouter, RouterProvider } from "react-router";
 import Login from "./pages/login";
 import Signup from "./pages/Signup";
+import Home from "./pages/Home";
+import Navbar from "./Component/Navbar";
+import Contact from "./pages/Contact";
+import AdminHome from "./pages/admin/home";
 
 function App() {
   const router = createBrowserRouter([
     {
       path: "/login",
       Component: Login,
-      // children: [
-      //   {
-      //     path: "shows/:showId",
-      //     Component: Show,
-      //     loader: ({ request, params }) =>
-      //       fetch(`/api/show/${params.id}.json`, {
-      //         signal: request.signal,
-      //       }),
-      //   },
-      // ],
     },
     {
       path: "/signup",
@@ -25,7 +19,21 @@ function App() {
     },
     {
       path: "/",
-      Component: () => <h1>Welcome to the App</h1>,
+      Component: Navbar,
+      children: [
+        {
+          path: "/",
+          Component: Home,
+        },
+        {
+          path: "/contact",
+          Component: Contact,
+        },
+      ],
+    },
+    {
+      path: "/admin",
+      Component: AdminHome,
     },
   ]);
   return <RouterProvider router={router} />;

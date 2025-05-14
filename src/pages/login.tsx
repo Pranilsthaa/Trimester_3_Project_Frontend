@@ -1,12 +1,12 @@
 import type { AxiosResponse } from "axios";
-import React, { useState, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import POSTDATA from "../../Api/PostData";
 import { Link, useNavigate } from "react-router-dom";
 
 interface LoginResponse {
-  response: {
-    message: string;
-  };
+  message: string;
+  role: string;
+  token: string;
 }
 
 function Login() {
@@ -24,7 +24,13 @@ function Login() {
         password,
       })) as AxiosResponse<LoginResponse>;
       if (response?.status === 200) {
-        navigate("/", { replace: true });
+        if (response?.data?.role === "admin") {
+          localStorage.setItem("token", response?.data?.token);
+          navigate("/admin", { replace: true });
+        } else {
+          localStorage.setItem("token", response?.data?.token);
+          navigate("/", { replace: true });
+        }
       } else if (response?.status === 401) {
         alert(response?.response?.data?.message || "Unauthorized");
       } else {

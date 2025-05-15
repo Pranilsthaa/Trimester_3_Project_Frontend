@@ -4,8 +4,10 @@ import Login from "./pages/login";
 import Signup from "./pages/Signup";
 import Home from "./pages/Home";
 import Navbar from "./Component/Navbar";
-import Contact from "./pages/Contact";
 import AdminHome from "./pages/admin/home";
+import Project from "./pages/Contact";
+import AdminSidebar from "./Component/AdminSidebar";
+import Settings from "./pages/admin/settings";
 
 function App() {
   const router = createBrowserRouter([
@@ -26,14 +28,18 @@ function App() {
           Component: Home,
         },
         {
-          path: "/contact",
-          Component: Contact,
+          path: "/project",
+          Component: Project,
         },
       ],
     },
     {
       path: "/admin",
-      Component: AdminHome,
+      Component: AdminSidebar,
+      children: [
+        { path: "/admin", Component: AdminHome },
+        { path: "settings", Component: Settings },
+      ],
     },
   ]);
   return <RouterProvider router={router} />;

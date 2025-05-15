@@ -106,14 +106,6 @@ function AdminHome() {
           </div>
         </div>
       </div>
-      <button
-        onClick={() => {
-          localStorage.clear();
-          navigate("/login", { replace: true });
-        }}
-      >
-        Logout
-      </button>
     </>
   );
 }

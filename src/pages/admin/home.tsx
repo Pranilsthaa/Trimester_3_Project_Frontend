@@ -1,19 +1,39 @@
 import { useEffect, useState } from "react";
 import GETDATA from "../../../Api/GetData";
-import type { Axios, AxiosResponse } from "axios";
-import { replace, useNavigate } from "react-router";
+import type { AxiosResponse } from "axios";
+import { useNavigate } from "react-router";
+import POSTDATA from "../../../Api/PostData";
 
 interface User {
   id: number;
   message: string;
 }
 
-const ROLES = ["admin", "edit", "user", "editor", "viewer", "guest"];
+// const ROLES = ["admin", "edit", "user", "editor", "viewer", "guest"];
 
 function AdminHome() {
   const [users, setUsers] = useState([{ id: 0, username: "", role: "" }]);
+  const [roles, setRoles] = useState([{ id: 0, role: "" }]);
 
   const navigate = useNavigate();
+
+  const handleRoleChange = async (userId: number, roleId: string) => {
+    try {
+      const response = (await POSTDATA("update-role", {
+        user_id: userId,
+        role_id: roleId,
+      })) as AxiosResponse<User>;
+      if (response?.status === 200) {
+        alert("Role updated successfully");
+      } else if (response?.status === 401) {
+        alert("Unauthorized");
+      } else if (response?.status === 403) {
+        alert("Forbidden");
+      }
+    } catch (error: any) {
+      alert(error?.response?.data?.message || "Error updating role");
+    }
+  };
 
   const getUsers = async () => {
     try {
@@ -30,8 +50,24 @@ function AdminHome() {
     }
   };
 
+  const getRoles = async () => {
+    try {
+      const response = (await GETDATA("roles", {})) as AxiosResponse;
+      if (response?.status === 200) {
+        setRoles(response?.data);
+      } else if (response?.status === 401) {
+        alert("Unauthorized");
+      } else if (response?.status === 403) {
+        alert("Forbidden");
+      }
+    } catch (error: any) {
+      alert(error?.response?.data?.message || "Error fetching roles");
+    }
+  };
+
   useEffect(() => {
     getUsers();
+    getRoles();
   }, []);
   console.log(users);
   return (
@@ -81,7 +117,9 @@ function AdminHome() {
                         <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                           <select
                             value={user.role}
-                            // onChange={(e) => handleRoleChange(user.id, e.target.value)}
+                            onChange={(e) =>
+                              handleRoleChange(user.id, e.target.value)
+                            }
                             className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
                           >
                             {!user.role && (
@@ -90,9 +128,9 @@ function AdminHome() {
                               </option>
                             )}
 
-                            {ROLES.map((role) => (
-                              <option key={role} value={role}>
-                                {role}
+                            {roles.map((role) => (
+                              <option key={role.id} value={role.id}>
+                                {role.role}
                               </option>
                             ))}
                           </select>

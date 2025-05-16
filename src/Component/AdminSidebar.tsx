@@ -8,8 +8,8 @@ const adminitems = [
 function AdminSidebar() {
   const navigate = useNavigate();
   return (
-    <div className="">
-      <nav className="fixed w-64 h-full bg-gray-800 text-white p-6">
+    <div className="antialiased">
+      <nav className="fixed w-64 h-full bg-gray-800 text-white p-6 ">
         <h2 className="text-xl font-bold mb-6">Admin Panel</h2>
         <ul className="space-y-4 flex flex-col ">
           {adminitems.map((item) => (

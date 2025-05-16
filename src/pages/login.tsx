@@ -5,8 +5,13 @@ import { Link, useNavigate } from "react-router-dom";
 
 interface LoginResponse {
   message: string;
-  role: string;
   token: string;
+  role:
+    | {
+        id: number;
+        permission: string;
+      }[]
+    | string;
 }
 
 function Login() {
@@ -28,11 +33,16 @@ function Login() {
           localStorage.setItem("token", response?.data?.token);
           navigate("/admin", { replace: true });
         } else {
+          console.log(response?.data);
+          const permissions = response?.data?.role.map((item) => {
+            return item.permission;
+          });
+          localStorage.setItem("permissions", JSON.stringify(permissions));
           localStorage.setItem("token", response?.data?.token);
           navigate("/", { replace: true });
         }
       } else if (response?.status === 401) {
-        alert(response?.response?.data?.message || "Unauthorized");
+        alert(response?.data?.message || "Unauthorized");
       } else {
         alert("Unexpected error occurred");
       }

@@ -8,6 +8,7 @@ import AdminHome from "./pages/admin/home";
 import Project from "./pages/Contact";
 import AdminSidebar from "./Component/AdminSidebar";
 import Settings from "./pages/admin/settings";
+import CheckPermissions from "../service/checkPermissions";
 
 function App() {
   const router = createBrowserRouter([
@@ -21,7 +22,11 @@ function App() {
     },
     {
       path: "/",
-      Component: Navbar,
+      Component: () => (
+        <CheckPermissions>
+          <Navbar />
+        </CheckPermissions>
+      ),
       children: [
         {
           path: "/",
